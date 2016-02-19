@@ -2,20 +2,35 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
-		shell: {
-			// запуск сервера через скрипт shell'a https://www.npmjs.com/package/grunt-shell
-		},
+        shell: {
+            dev: {
+                command: 'node server'
+            }
+        },
 
-		watch: {
-			// запуск watcher'a, который следит за изенениями файлов  templates/*.xml
-			// и если они изменяются, то запускает таск сборки шаблонов (grunt fest)
-		},
-		
-		concurrent: {
-			// одновременный запуска shell'a и watcher'a https://www.npmjs.com/package/grunt-concurrent
-		},
+        watch: {
+            fest: {
+                files: ['templates/*.xml'],
+                tasks: ['fest'],
+                options: {
+                    spawn: false,
+                    atBegin: true
+                },
+            }
+        },
 
-		fest: {
+        qunit: {
+            all: ['./public_html/tests/index.html']
+        },
+
+        concurrent: {
+            dev: ['shell', 'watch'],
+            options: {
+                logConcurrentOutput: true
+            }
+        },
+
+        fest: {
             templates: {
                 files: [{
                     expand: true,
@@ -32,57 +47,18 @@ module.exports = function (grunt) {
                     }
                 }
             }
-<<<<<<< HEAD
-=======
-        },
-        watch: {
-            fest: {
-                files: ['templates/*.xml'],
-                tasks: ['fest'],
-                options: {
-                    interrupt: true,
-                    atBegin: true
-                }
-            },
-            server: {
-                files: [
-                    'public_html/js/**/*.js',
-                    'public_html/css/**/*.css'
-                ],
-                options: {
-                    livereload: true
-                }
-            }
-        },
-        concurrent: {
-            target: ['watch', 'shell'],
-            options: {
-                logConcurrentOutput: true
-            }
-        },
-        qunit: {
-            all: ['./public_html/tests/index.html']
->>>>>>> upstream/v2
         }
 
     });
 
-	// подключть все необходимые модули
+    // подключть все необходимые модули
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-concurrent');
-<<<<<<< HEAD
-	grunt.loadNpmTasks('grunt-shell');
-	grunt.loadNpmTasks('grunt-fest');
-
-    // результат команды grunt
-    grunt.registerTask('default', ['shell', 'watch']);
-=======
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-fest');
 
-    grunt.registerTask('test', ['qunit:all']);
+    // результат команды grunt
     grunt.registerTask('default', ['concurrent']);
-
->>>>>>> upstream/v2
+    grunt.registerTask('test', ['qunit:all']);
 };
